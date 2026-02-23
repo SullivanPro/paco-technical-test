@@ -1,0 +1,15 @@
+
+services:
+  mongodb:
+    image: mongo:5
+    container_name: technical-test-mongo
+    restart: unless-stopped # Redémarre toujours sauf si stoppé
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: auchan-tech-test
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
