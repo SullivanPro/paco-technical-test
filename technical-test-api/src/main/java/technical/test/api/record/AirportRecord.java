@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Builder
-@Document
+@Document(collection = "airport")
 public class AirportRecord {
     @Id
     private String iata;
