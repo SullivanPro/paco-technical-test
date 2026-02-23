@@ -11,6 +11,8 @@ import technical.test.api.representation.FlightRepresentation;
 import technical.test.api.services.AirportService;
 import technical.test.api.services.FlightService;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class FlightFacade {
@@ -32,4 +34,36 @@ public class FlightFacade {
                             return Mono.just(flightRepresentation);
                         }));
     }
+
+
+    /**
+     * Create a flight from the representation provided
+     * then returns the record flight
+     *
+     * @param flightRepresentation flight data to be created
+     * @return flight created with this information
+    **/
+    public Mono<FlightRepresentation> createFlight(FlightRepresentation flightRepresentation) {
+
+        return airportService.findByIataCode(flightRepresentation.getOrigin().getIata())
+                .zipWith(airportService.findByIataCode(flightRepresentation.getDestination().getIata()))
+                .flatMap(tuple -> {
+
+                    // Convert incoming representation → record
+                    var flightRecord = flightMapper.convert(flightRepresentation);
+
+                    if (flightRecord.getId() == null) {
+                        flightRecord.setId(UUID.randomUUID());
+                    }
+
+                    return flightService.createFlight(flightRecord)
+                            .map(savedRecord -> {
+                                FlightRepresentation response = flightMapper.convert(savedRecord);
+                                response.setOrigin(airportMapper.convert(tuple.getT1()));
+                                response.setDestination(airportMapper.convert(tuple.getT2()));
+                                return response;
+                            });
+                });
+    }
+
 }
