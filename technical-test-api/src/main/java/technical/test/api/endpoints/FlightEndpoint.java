@@ -14,8 +14,8 @@ public class FlightEndpoint {
     private final FlightFacade flightFacade;
 
     @GetMapping
-    public Flux<FlightRepresentation> getAllFlights() {
-        return flightFacade.getAllFlights();
+    public Flux<FlightRepresentation> getAllFlights(@RequestParam(required = false) String sort) {
+        return flightFacade.getAllFlights(sort);
     }
 
     @PostMapping

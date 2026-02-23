@@ -11,6 +11,7 @@ import technical.test.api.representation.FlightRepresentation;
 import technical.test.api.services.AirportService;
 import technical.test.api.services.FlightService;
 
+import java.util.Comparator;
 import java.util.UUID;
 
 @Component
@@ -21,18 +22,40 @@ public class FlightFacade {
     private final FlightMapper flightMapper;
     private final AirportMapper airportMapper;
 
-    public Flux<FlightRepresentation> getAllFlights() {
+    public Flux<FlightRepresentation> getAllFlights(String sort) {
         return flightService.getAllFlights()
-                .flatMap(flightRecord -> airportService.findByIataCode(flightRecord.getOrigin())
-                        .zipWith(airportService.findByIataCode(flightRecord.getDestination()))
-                        .flatMap(tuple -> {
-                            AirportRecord origin = tuple.getT1();
-                            AirportRecord destination = tuple.getT2();
-                            FlightRepresentation flightRepresentation = this.flightMapper.convert(flightRecord);
-                            flightRepresentation.setOrigin(this.airportMapper.convert(origin));
-                            flightRepresentation.setDestination(this.airportMapper.convert(destination));
-                            return Mono.just(flightRepresentation);
-                        }));
+                .flatMap(flightRecord ->
+                        airportService.findByIataCode(flightRecord.getOrigin())
+                                .zipWith(airportService.findByIataCode(flightRecord.getDestination()))
+                                .map(tuple -> {
+                                    var origin = tuple.getT1();
+                                    var destination = tuple.getT2();
+                                    var flightRepresentation = this.flightMapper.convert(flightRecord);
+                                    flightRepresentation.setOrigin(this.airportMapper.convert(origin));
+                                    flightRepresentation.setDestination(this.airportMapper.convert(destination));
+                                    return flightRepresentation;
+                                })
+                )
+                // Optional sorting
+                .transform(flux -> applySort(flux, sort));
+    }
+
+    /**
+     * Recovers flights and applies sorting
+     *
+     * @param sort sorting criteria (price, -price, destination, -destination)
+     * @return sorted flights
+     */
+    private Flux<FlightRepresentation> applySort(Flux<FlightRepresentation> flux, String sort) {
+        if (sort == null || sort.isBlank()) return flux;
+
+        return switch (sort) {
+            case "price"      -> flux.sort(Comparator.comparing(FlightRepresentation::getPrice));
+            case "-price"     -> flux.sort(Comparator.comparing(FlightRepresentation::getPrice).reversed());
+            case "destination"   -> flux.sort(Comparator.comparing(rep -> rep.getOrigin().getIata()));
+            case "-destination"  -> flux.sort(Comparator.comparing((FlightRepresentation rep) -> rep.getOrigin().getIata()).reversed());
+            default -> flux;
+        };
     }
 
 
