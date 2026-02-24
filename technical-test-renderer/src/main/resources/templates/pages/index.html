@@ -89,7 +89,7 @@
             <tr th:each="flight : ${flights}">
                 <th th:text="${flight.origin.name}"></th>
                 <th th:text="${flight.destination.name}"></th>
-                <th th:text="${flight.price}"></th>
+                <th th:text="${#numbers.formatDecimal(flight.price, 1, 2) + ' €'}"></th>
                 <th th:text="${flight.image}"></th>
             </tr>
         </table>
