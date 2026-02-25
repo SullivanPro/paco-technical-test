@@ -78,6 +78,18 @@
     <h2>Bienvenue sur notre site de recherche de vols</h2>
     <p>Commencez votre aventure en trouvant les meilleurs vols disponibles.</p>
     <!-- Ajoutez ici le formulaire de recherche de vols ou d'autres éléments pertinents -->
+
+    <form method="get">
+        <label for="sort">Trier par :</label>
+        <select id="sort" name="sort" onchange="this.form.submit()">
+            <option value="">Aucun</option>
+            <option value="price" th:selected="${sort == 'price'}">Prix croissant</option>
+            <option value="-price" th:selected="${sort == '-price'}">Prix décroissant</option>
+            <option value="destination" th:selected="${sort == 'destination'}">Destination A→Z</option>
+            <option value="-destination" th:selected="${sort == '-destination'}">Destination Z→A</option>
+        </select>
+    </form>
+
     <ul>
         <table>
             <tr>

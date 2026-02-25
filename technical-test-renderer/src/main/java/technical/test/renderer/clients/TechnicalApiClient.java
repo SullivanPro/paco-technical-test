@@ -9,6 +9,10 @@ import technical.test.renderer.properties.TechnicalApiProperties;
 import technical.test.renderer.viewmodels.FlightCreateRequest;
 import technical.test.renderer.viewmodels.FlightViewModel;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+
 @Component
 @Slf4j
 public class TechnicalApiClient {
@@ -21,10 +25,17 @@ public class TechnicalApiClient {
         this.webClient = webClientBuilder.build();
     }
 
-    public Flux<FlightViewModel> getFlights() {
-        return webClient
-                .get()
-                .uri(technicalApiProperties.getUrl() + technicalApiProperties.getFlightPath())
+    public Flux<FlightViewModel> getFlights(String sort) {
+        String base = technicalApiProperties.getUrl();
+        String path = technicalApiProperties.getFlightPath();
+
+        String url = base + path;
+        if (sort != null && !sort.isBlank()) {
+            url += "?sort=" + URLEncoder.encode(sort, StandardCharsets.UTF_8);
+        }
+
+        return webClient.get()
+                .uri(url)
                 .retrieve()
                 .bodyToFlux(FlightViewModel.class);
     }

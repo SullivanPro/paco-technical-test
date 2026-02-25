@@ -16,8 +16,8 @@ public class FlightFacade {
         this.flightService = flightService;
     }
 
-    public Flux<FlightViewModel> getFlights() {
-        return this.flightService.getFlights();
+    public Flux<FlightViewModel> getFlights(String sort) {
+        return this.flightService.getFlights(sort);
     }
 
     public Mono<FlightViewModel> createFlight(FlightCreateRequest request) {

@@ -15,8 +15,8 @@ public class FlightService {
         this.technicalApiClient = technicalApiClient;
     }
 
-    public Flux<FlightViewModel> getFlights() {
-        return this.technicalApiClient.getFlights();
+    public Flux<FlightViewModel> getFlights(String sort) {
+        return this.technicalApiClient.getFlights(sort);
     }
 
     public Mono<FlightViewModel> createFlight(FlightCreateRequest request) {
