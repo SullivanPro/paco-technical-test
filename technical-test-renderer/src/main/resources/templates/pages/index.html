@@ -86,11 +86,14 @@
                 <th scope="col">Prix</th>
                 <th scope="col">Photo</th>
             </tr>
+
             <tr th:each="flight : ${flights}">
-                <th th:text="${flight.origin.name}"></th>
-                <th th:text="${flight.destination.name}"></th>
-                <th th:text="${#numbers.formatDecimal(flight.price, 1, 2) + ' €'}"></th>
-                <th th:text="${flight.image}"></th>
+                <td th:text="${flight.origin.name}"></td>
+                <td th:text="${flight.destination.name}"></td>
+                <td th:text="${#numbers.formatDecimal(flight.price, 1, 2) + ' €'}"></td>
+                <td>
+                    <img th:src="${flight.image}" loading="lazy" width="120">
+                </td>
             </tr>
         </table>
     </ul>
