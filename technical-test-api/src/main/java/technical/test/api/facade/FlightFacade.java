@@ -52,10 +52,33 @@ public class FlightFacade {
         return switch (sort) {
             case "price"      -> flux.sort(Comparator.comparing(FlightRepresentation::getPrice));
             case "-price"     -> flux.sort(Comparator.comparing(FlightRepresentation::getPrice).reversed());
-            case "destination"   -> flux.sort(Comparator.comparing(rep -> rep.getOrigin().getIata()));
-            case "-destination"  -> flux.sort(Comparator.comparing((FlightRepresentation rep) -> rep.getOrigin().getIata()).reversed());
+            case "destination"   -> flux.sort(Comparator.comparing(rep -> rep.getDestination().getIata()));
+            case "-destination"  -> flux.sort(Comparator.comparing((FlightRepresentation rep) -> rep.getDestination().getIata()).reversed());
             default -> flux;
         };
+    }
+
+
+    /**
+     * Retrieves a single flight by its unique identifier.
+     *
+     * @param id the UUID of the flight to retrieve
+     * @return the flight representation or a 404 error
+     */
+     public Mono<FlightRepresentation> getFlightById(UUID id) {
+        return flightService.getFlightById(id)
+                .flatMap(flightRecord ->
+                        airportService.findByIataCode(flightRecord.getOrigin())
+                                .zipWith(airportService.findByIataCode(flightRecord.getDestination()))
+                                .map(tuple -> {
+                                    var origin = tuple.getT1();
+                                    var destination = tuple.getT2();
+                                    var rep = this.flightMapper.convert(flightRecord);
+                                    rep.setOrigin(this.airportMapper.convert(origin));
+                                    rep.setDestination(this.airportMapper.convert(destination));
+                                    return rep;
+                                })
+                );
     }
 
 

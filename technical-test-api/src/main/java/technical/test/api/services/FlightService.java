@@ -7,6 +7,8 @@ import reactor.core.publisher.Mono;
 import technical.test.api.record.FlightRecord;
 import technical.test.api.repository.FlightRepository;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class FlightService {
@@ -16,6 +18,7 @@ public class FlightService {
         return flightRepository.findAll();
     }
 
+    public Mono<FlightRecord> getFlightById(UUID id) { return flightRepository.findById(id); }
 
     public Mono<FlightRecord> createFlight(FlightRecord flightRecord) {
         return flightRepository.save(flightRecord);
