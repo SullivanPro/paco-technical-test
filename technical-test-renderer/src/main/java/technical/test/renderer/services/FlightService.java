@@ -7,6 +7,8 @@ import technical.test.renderer.clients.TechnicalApiClient;
 import technical.test.renderer.viewmodels.FlightViewModel;
 import technical.test.renderer.viewmodels.FlightCreateRequest;
 
+import java.util.UUID;
+
 @Service
 public class FlightService {
     private final TechnicalApiClient technicalApiClient;
@@ -18,6 +20,8 @@ public class FlightService {
     public Flux<FlightViewModel> getFlights(String sort) {
         return this.technicalApiClient.getFlights(sort);
     }
+
+    public Mono<FlightViewModel> getFlight(UUID id) { return this.technicalApiClient.getFlight(id); }
 
     public Mono<FlightViewModel> createFlight(FlightCreateRequest request) {
         return this.technicalApiClient.createFlight(request);

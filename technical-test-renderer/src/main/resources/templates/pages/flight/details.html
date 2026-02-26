@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr" layout:decorate="~{decorators/master}"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail du vol</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f7fc;
+            color: #333;
+        }
+
+        header {
+            background-color: #3498db;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .image-wrapper {
+            width: 100%;
+            height: 260px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .card {
+            padding: 14px;
+            border-radius: 8px;
+            background: #f7f9fc;
+            border: 1px solid #e1e1e1;
+        }
+
+        .price {
+            font-size: 1.6rem;
+            color: #27ae60;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        a.back {
+            color: #3498db;
+            text-decoration: none;
+            padding-top: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<section layout:fragment="content">
+
+    <header>
+        <h1>Détails du vol</h1>
+    </header>
+
+    <div class="container">
+
+        <!-- Image -->
+        <div class="image-wrapper">
+            <img th:src="${flight.image}" alt="Image du vol" loading="lazy" />
+        </div>
+
+        <!-- Titre -->
+        <h2 th:text="${flight.origin.name} + ' → ' + ${flight.destination.name}">
+            Départ → Arrivée
+        </h2>
+
+        <div class="info-grid">
+
+            <div class="card">
+                <h3>Départ</h3>
+                <p th:text="${#temporals.format(flight.departure, 'dd/MM/yyyy HH:mm')}"></p>
+                <p>
+                    <strong th:text="${flight.origin.name}"></strong>
+                    (<span th:text="${flight.origin.iata}"></span>)
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>Arrivée</h3>
+                <p th:text="${#temporals.format(flight.arrival, 'dd/MM/yyyy HH:mm')}"></p>
+                <p>
+                    <strong th:text="${flight.destination.name}"></strong>
+                    (<span th:text="${flight.destination.iata}"></span>)
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Prix -->
+        <div class="price">
+            <span th:text="${#numbers.formatDecimal(flight.price, 1, 2)} + ' €'"></span>
+        </div>
+
+        <a class="back" th:href="@{/}">← Retour à la liste des vols</a>
+    </div>
+
+</section>
+
+</body>
+</html>

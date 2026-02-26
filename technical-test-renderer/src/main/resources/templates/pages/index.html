@@ -97,6 +97,7 @@
                 <th scope="col">Arrivée à</th>
                 <th scope="col">Prix</th>
                 <th scope="col">Photo</th>
+                <th scope="col"></th>
             </tr>
 
             <tr th:each="flight : ${flights}">
@@ -106,6 +107,12 @@
                 <td>
                     <img th:src="${flight.image}" loading="lazy" width="120">
                 </td>
+                <td>
+                    <a th:href="@{/flights/{id}(id=${flight.id})}">
+                        Voir détails
+                    </a>
+                </td>
+
             </tr>
         </table>
     </ul>

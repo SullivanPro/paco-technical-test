@@ -11,7 +11,7 @@ import technical.test.renderer.viewmodels.FlightViewModel;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -38,6 +38,17 @@ public class TechnicalApiClient {
                 .uri(url)
                 .retrieve()
                 .bodyToFlux(FlightViewModel.class);
+    }
+
+    public Mono<FlightViewModel> getFlight(UUID id) {
+        String base = technicalApiProperties.getUrl();
+        String path = technicalApiProperties.getFlightPath();
+        String url = base + path + "/{id}";
+
+        return webClient.get()
+                .uri(url, id)
+                .retrieve()
+                .bodyToMono(FlightViewModel.class);
     }
 
     public Mono<FlightViewModel> createFlight(FlightCreateRequest request) {
