@@ -136,7 +136,7 @@
             <span th:text="${#numbers.formatDecimal(flight.price, 1, 2)} + ' €'"></span>
         </div>
 
-        <a class="back" th:href="@{/}">← Retour à la liste des vols</a>
+        <a class="back" th:href="@{/(sort=${param.sort})}">← Retour à la liste des vols</a>
     </div>
 
 </section>

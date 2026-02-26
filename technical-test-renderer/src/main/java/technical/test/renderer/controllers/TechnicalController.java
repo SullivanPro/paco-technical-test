@@ -32,15 +32,14 @@ public class TechnicalController {
                 .thenReturn("pages/index");
     }
 
-
     @GetMapping("/flights/{id}")
-    public Mono<String> showFlightDetails(@PathVariable UUID id, Model model) {
+    public Mono<String> showFlightDetails(@PathVariable UUID id, @RequestParam(required = false) String sort, Model model) {
         return flightFacade.getFlight(id)
                 .doOnNext(f -> model.addAttribute("flight", f))
+                .doOnSuccess(v -> model.addAttribute("sort", sort))
                 .switchIfEmpty(Mono.fromRunnable(() -> model.addAttribute("flight", null)))
                 .thenReturn("pages/flight/details");
     }
-
 
     @GetMapping("/admin")
     public String showAdminPage(Model model) {

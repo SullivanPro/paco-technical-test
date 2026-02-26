@@ -108,7 +108,7 @@
                     <img th:src="${flight.image}" loading="lazy" width="120">
                 </td>
                 <td>
-                    <a th:href="@{/flights/{id}(id=${flight.id})}">
+                    <a th:href="@{/flights/{id}(id=${flight.id}, sort=${sort})}">
                         Voir détails
                     </a>
                 </td>
